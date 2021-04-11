@@ -1,0 +1,15 @@
+{
+  "name": "dot_staking",
+  "version": "1.0.0",
+  "description": "FB DOT Staking",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@polkadot/api": "^4.4.1",
+    "fireblocks-sdk": "^1.5.17"
+  }
+}
