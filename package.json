@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "@polkadot/api": "^4.4.1",
-    "fireblocks-sdk": "^1.5.17"
+    "fireblocks-sdk": "^1.5.17",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7"
   }
 }
