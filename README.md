@@ -8,9 +8,9 @@ This script allows to stake DOT via the Fireblocks system using the RAW signing 
 
     a. Stash Account - holds the amount to stake
 
-    b. Controller Account - has the permissions to run nominations (should have a balance of 25 DOT)
+    b. Controller Account - has the permissions to run nominations (should have balance of 25 DOT)
 
-2. Enable RAW signing feature by contacting Fireblocks
+2. Enable RAW signing feature by contacting Fireblocks's support team
 
 3. Set transaction authorization policy rule that governs the RAW signing operation, the policy should include the following parameters:
 
