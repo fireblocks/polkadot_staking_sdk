@@ -32,4 +32,4 @@ This script allows to stake DOT via the Fireblocks system using the RAW signing 
 
 **How to stop staking**
 
-1. unbond(<stash_account_vault_account_id>, <amount_to_unbond>);
+1. unbond(<controller_account_vault_account_id>, <amount_to_unbond>);
