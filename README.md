@@ -31,7 +31,7 @@ This script allows to stake DOT via the Fireblocks system using the RAW signing 
 2. bond(<stash_account_vault_account_id>, <controller_account_address>);
 
 **How to stake extra DOT**
-1. bondExtra(<stash_account_vault_account_id>, <amount>)
+1. bondExtra(<stash_account_vault_account_id>, <amount_to_bond>)
 
 **How to stop staking**
 
