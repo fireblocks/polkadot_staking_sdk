@@ -28,11 +28,21 @@ This script allows to stake DOT via the Fireblocks system using the RAW signing 
 
 1. addProxy(<controller_account_vault_account_id>, <proxy_dot_address>);
 
-2. bond(<stash_account_vault_account_id>, <controller_account_address>);
+2. bond(<stash_account_vault_account_id>, <controller_account_address>, **optional** - <reward_destination>);
+<reward_destination> - Can be one of the following:
+    a. Stash (Default)
+    b. Staked - the rewards will be send back to the Stash and bonded automatically
+    c. Controller - the rewards will be send back to the controller
 
 **How to stake extra DOT**
 1. bondExtra(<stash_account_vault_account_id>, <amount_to_bond>)
 
 **How to stop staking**
 
-1. unbond(<controller_account_vault_account_id>, <amount_to_unbond>);
+1. If you want to unbond the **entire bonded** balance, run first: chill(<controller_account_vault_account_id>);
+
+2. unbond(<controller_account_vault_account_id>, <amount_to_unbond>);
+
+3. **28 days after** unbond() - withdrawUnbonded(<controller_account_vault_account_id>);
+
+4. **Optional** - removeProxy(<controller_account_vault_account_id>);
