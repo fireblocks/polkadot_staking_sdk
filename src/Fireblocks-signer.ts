@@ -42,7 +42,7 @@ class FireblocksSigner implements Signer {
 
             while ((await this.fireblocks.getTransactionById(txId)).status != TransactionStatus.COMPLETED) {
                 console.log((await this.fireblocks.getTransactionById(txId)).status);
-                setTimeout(() => { }, 500);
+                setTimeout(() => { }, 4000);
             }
 
             const signedTx = (await this.fireblocks.getTransactionById(txId)).signedMessages;
