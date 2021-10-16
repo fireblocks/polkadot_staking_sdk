@@ -53,10 +53,22 @@ export  class DOTStaker {
     }
     
     async unbond(vaultAccountId, amount?: number) {
-        await this.sendTransaction({params: ['staking.unbond',(amount * 10000000000).toString()], vaultAccountId, txNote: `Unbond ${amount} DOT`});
+        await this.sendTransaction({params: ['staking.unbond',(amount * 10000000000).toString()], vaultAccountId, txNote: `Unbonding ${amount} DOT`});
     }
     
     async addProxy(vaultAccountId, proxyAddress) {
-        await this.sendTransaction({params: ['proxy.addProxy', proxyAddress, 'Staking', '0'], vaultAccountId, txNote: `staking.addProxy ${proxyAddress}`});
+        await this.sendTransaction({params: ['proxy.addProxy', proxyAddress, 'Staking', '0'], vaultAccountId, txNote: `Adding the following proxy: ${proxyAddress}`});
+    }
+
+    async chill(vaultAccountId) {
+        await this.sendTransaction({params: ['staking.chill'], vaultAccountId, txNote: `Chilling the controller account`});
+    }
+
+    async removeProxy(vaultAccountId, proxyAddress, proxyType?) {
+        await this.sendTransaction({params: ['proxy.removeProxy', proxyAddress, proxyType? proxyType: 'Staking', '0'], vaultAccountId, txNote: `Removing the following proxy: ${proxyAddress}`});
+    }
+    async withdrawUnbonded(vaultAccountId) {
+        await this.sendTransaction({params: ['staking.withdrawUnbonded', null], vaultAccountId, txNote: `Withdrawing Unbonded Funds`});
     }
 }
+
