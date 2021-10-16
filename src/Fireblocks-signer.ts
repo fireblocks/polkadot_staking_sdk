@@ -84,9 +84,9 @@ export async function sendTransaction(fireblocks: FireblocksSDK, account: string
 
             if (result.dispatchError?.isModule) {
                 const decoded = api.registry.findMetaError(result.dispatchError.asModule);
-                const { documentation, name, section } = decoded;
+                const { docs, name, section } = decoded;
 
-                console.log(`${section}.${name}: ${documentation.join(' ')}`);   
+                console.log(`${section}.${name}: ${docs.join(' ')}`);   
             }
 
             console.log(JSON.stringify(result.toHuman(), null, 2));
