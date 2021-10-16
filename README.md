@@ -33,9 +33,7 @@ This script allows to stake DOT via the Fireblocks system using the RAW signing 
 <reward_destination> - Can be one of the following:
 
     a. Stash (Default)
-
     b. Staked - the rewards will be send back to the Stash and bonded automatically
-
     c. Controller - the rewards will be send back to the controller
 
 **How to stake extra DOT**
