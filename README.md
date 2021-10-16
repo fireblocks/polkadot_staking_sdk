@@ -31,6 +31,7 @@ This script allows to stake DOT via the Fireblocks system using the RAW signing 
 2. bond(<stash_account_vault_account_id>, <controller_account_address>, **optional** - <reward_destination>);
 
 <reward_destination> - Can be one of the following:
+
     a. Stash (Default)
 
     b. Staked - the rewards will be send back to the Stash and bonded automatically
