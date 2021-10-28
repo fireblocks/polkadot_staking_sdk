@@ -24,7 +24,7 @@ export  class DOTStaker {
         return sendTransaction(this.apiClient, permanentAddress, 0, this.getEndpoint(), params , vaultAccountId, txNote);
     }
 
-    async bond(vaultAccountId, amount?: number, controllerAddress?: string) {
+    async bond(vaultAccountId, amount?: number, controllerAddress?: string, rewardDestination?: string) {
         if(!amount) {
             const availableBalance = (await this.apiClient.getVaultAccountAsset(vaultAccountId, this.getAssetId())).available;
             amount = Number.parseFloat(availableBalance);
@@ -38,7 +38,7 @@ export  class DOTStaker {
             params: [
                 'staking.bond', controllerAddress || await this.getPermanentAddress(vaultAccountId),
                 (amount * 10000000000).toString(),
-                'Stash'
+                rewardDestination? rewardDestination: 'Stash'
             ],
             txNote
         });
