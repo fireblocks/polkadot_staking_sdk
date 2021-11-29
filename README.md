@@ -28,7 +28,7 @@ This script allows to stake DOT via the Fireblocks system using the RAW signing 
 
 1. addProxy(<controller_account_vault_account_id>, <proxy_dot_address>);
 
-2. bond(<stash_account_vault_account_id>, <amount>, <controller_account_address>, **optional** - <reward_destination>);
+2. bond(<stash_account_vault_account_id>, <amount_to_stake>, <controller_account_address>, **optional** - <reward_destination>);
 
 reward_destination - Can be one of the following:
 
