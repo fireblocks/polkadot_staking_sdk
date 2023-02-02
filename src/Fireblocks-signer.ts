@@ -13,7 +13,7 @@ class FireblocksSigner implements Signer {
 
     public async signRaw({ data, type }: SignerPayloadRaw): Promise<SignerResult> {
         return new Promise(async (resolve) => {
-
+            let prevStatus;
             data = (data.length > (256 + 1) * 2) ? blake2AsHex(data) : data;
 
             console.log('Payload: ' + data);
@@ -37,15 +37,24 @@ class FireblocksSigner implements Signer {
                 note: this.txNote || ""
             }
 
-            const txId = (await this.fireblocks.createTransaction(tx)).id;
-            console.log('TXID: ' + txId);
+            let txId = (await this.fireblocks.createTransaction(tx));
+            console.log('TXID: ' + txId.id);
 
-            while ((await this.fireblocks.getTransactionById(txId)).status != TransactionStatus.COMPLETED) {
-                console.log((await this.fireblocks.getTransactionById(txId)).status);
-                setTimeout(() => { }, 4000);
+            console.log("Transaction's status: " + txId.status);
+            while (txId.status != TransactionStatus.COMPLETED){
+                if(txId.status == TransactionStatus.BLOCKED || txId.status == TransactionStatus.FAILED || txId.status == TransactionStatus.REJECTED || txId.status == TransactionStatus.CANCELLED){
+                    console.log(`The transaction was ${txId.status} - exiting`)
+                    process.exit(0)
             }
+                prevStatus = txId.status;
+                txId = await this.fireblocks.getTransactionById(txId.id);
+                if(txId.status != prevStatus){
+                console.log("Transaction's status: " + txId.status);
+                }
+                setTimeout(() => {}, 4000); 
+            }       
 
-            const signedTx = (await this.fireblocks.getTransactionById(txId)).signedMessages;
+            const signedTx = (await this.fireblocks.getTransactionById(txId.id)).signedMessages;
             if (signedTx != undefined) {
                 const signature = '0x00' + signedTx[0].signature.fullSig;
                 console.log('Signature: ' + signature);
@@ -70,7 +79,6 @@ export async function sendTransaction(fireblocks: FireblocksSDK, account: string
     } else if (blocks != null) {
         // Get current block if we want to modify the number of blocks we have to sign
         const signedBlock = await api.rpc.chain.getBlock();
-
         options.blockHash = signedBlock.block.header.hash;
         // @ts-ignore
         options.era = api.createType('ExtrinsicEra', {
