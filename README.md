@@ -2,6 +2,18 @@
 
 This script allows to stake DOT via the Fireblocks system using the RAW signing API feature.
 
+## Getting started
+
+1. Clone this repo locally
+2. cd into the directory
+3. Run:
+```
+    npm install
+```    
+4. Make sure that typescript is installed globally:
+```
+    npm install -g typescript
+```
 **Prerequisites:**
 
 1. Create the following vault accounts with DOT wallet within each:
