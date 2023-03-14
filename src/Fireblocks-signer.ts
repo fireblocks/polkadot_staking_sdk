@@ -8,8 +8,11 @@ import { assert, hexToU8a, u8aToHex } from "@polkadot/util";
 import { blake2AsHex } from '@polkadot/util-crypto';
 
 class FireblocksSigner implements Signer {
-    constructor(public fireblocks: FireblocksSDK, private vaultAccountId: string, private txNote?: string, private testnet: boolean = false) {
-    }
+    constructor(
+        public fireblocks: FireblocksSDK, 
+        private vaultAccountId: string, 
+        private txNote?: string, 
+        private testnet: boolean = false){}
 
     public async signRaw({ data, type }: SignerPayloadRaw): Promise<SignerResult> {
         return new Promise(async (resolve) => {
@@ -43,14 +46,14 @@ class FireblocksSigner implements Signer {
             console.log("Transaction's status: " + txId.status);
             while (txId.status != TransactionStatus.COMPLETED){
                 if(txId.status == TransactionStatus.BLOCKED || txId.status == TransactionStatus.FAILED || txId.status == TransactionStatus.REJECTED || txId.status == TransactionStatus.CANCELLED){
-                    console.log(`The transaction was ${txId.status} - exiting`)
-                    process.exit(0)
+                    throw new Error(`The transaction was not completed - status: ${txId.status}`)
             }
                 prevStatus = txId.status;
                 txId = await this.fireblocks.getTransactionById(txId.id);
                 if(txId.status != prevStatus){
-                console.log("Transaction's status: " + txId.status);
+                    console.log("Transaction's status: " + txId.status);
                 }
+                
                 setTimeout(() => {}, 4000); 
             }       
 
@@ -66,6 +69,7 @@ class FireblocksSigner implements Signer {
 }
 
 export async function sendTransaction(fireblocks: FireblocksSDK, account: string, blocks: number | undefined, endpoint: string, [txName, ...params]: string[], vaultAccountId, txNote, testnet): Promise<void> {
+    
     const api = await ApiPromise.create({ provider: new WsProvider(endpoint) });
 
     const [section, method] = txName.split('.');
@@ -76,10 +80,12 @@ export async function sendTransaction(fireblocks: FireblocksSDK, account: string
     if (blocks === 0) {
         // immortal extrinsic
         options.era = 0;
-    } else if (blocks != null) {
+    } else if (!blocks) {
+        
         // Get current block if we want to modify the number of blocks we have to sign
         const signedBlock = await api.rpc.chain.getBlock();
         options.blockHash = signedBlock.block.header.hash;
+        
         // @ts-ignore
         options.era = api.createType('ExtrinsicEra', {
             current: signedBlock.block.header.number,
@@ -99,7 +105,6 @@ export async function sendTransaction(fireblocks: FireblocksSDK, account: string
             }
 
             console.log(JSON.stringify(result.toHuman(), null, 2));
-            process.exit(0);
         }
     });
 }
