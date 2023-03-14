@@ -10,7 +10,7 @@ const dotStaker = new DOTStaker(fireblocks, false);
 
 (async() => {
     
-    res = await dotStaker.addProxy("2", <proxy_dot_address>);
+    const res = await dotStaker.addProxy("2", <proxy_dot_address>);
     console.log(JSON.stringify(res, null, 2));
 
 })().catch(console.log);
