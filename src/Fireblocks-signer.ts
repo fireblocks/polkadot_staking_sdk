@@ -15,13 +15,10 @@ class FireblocksSigner implements Signer {
         private testnet: boolean = false){}
 
     public async signRaw({ data, type }: SignerPayloadRaw): Promise<SignerResult> {
+        
         return new Promise(async (resolve) => {
             let prevStatus;
             data = (data.length > (256 + 1) * 2) ? blake2AsHex(data) : data;
-
-            console.log('Payload: ' + data);
-            console.log('Type: ' + type);
-            console.log('hexToU8a(data): ' + hexToU8a(data));
 
             const rawMessageData: RawMessageData = {
                 messages: [{
@@ -60,15 +57,29 @@ class FireblocksSigner implements Signer {
             const signedTx = (await this.fireblocks.getTransactionById(txId.id)).signedMessages;
             if (signedTx != undefined) {
                 const signature = '0x00' + signedTx[0].signature.fullSig;
-                console.log('Signature: ' + signature);
-
+                
+                // @ts-ignore
                 resolve({ id: 1, signature });
             }
         });
     }
 }
 
-export async function sendTransaction(fireblocks: FireblocksSDK, account: string, blocks: number | undefined, endpoint: string, [txName, ...params]: string[], vaultAccountId, txNote, testnet): Promise<void> {
+export async function sendTransaction(
+        
+    fireblocks: FireblocksSDK, 
+    account: string, 
+    blocks: number | undefined, 
+    endpoint: string, 
+    [txName, ...params]: any[], 
+    vaultAccountId: string, 
+    txNote: string, 
+    testnet: boolean,
+    proxyNominate?: boolean,
+    proxyType?: string,
+    nominator?: string,
+    validators?: any[]
+    ): Promise<void> {
     
     const api = await ApiPromise.create({ provider: new WsProvider(endpoint) });
 
@@ -93,18 +104,42 @@ export async function sendTransaction(fireblocks: FireblocksSDK, account: string
         });
     }
 
-    await api.tx[section][method](...params).signAndSend(account, options, (result): void => {
+    let result;
 
+    // if nominating from proxy
+    if (proxyNominate) {
+
+        // call nominate as proxy
+        result = api.tx.proxy.proxy(
+            nominator,
+            proxyType,
+            api.tx.staking.nominate(validators)
+        )
+    
+    } else {
+
+        result = await api.tx[section][method](...params)
+    };
+
+    result.signAndSend(account, options, (result) => {
         if (result.isInBlock || result.isFinalized) {
 
             if (result.dispatchError?.isModule) {
                 const decoded = api.registry.findMetaError(result.dispatchError.asModule);
                 const { docs, name, section } = decoded;
-
-                console.log(`${section}.${name}: ${docs.join(' ')}`);   
-            }
-
-            console.log(JSON.stringify(result.toHuman(), null, 2));
+            
+                console.log(
+                    `The transaction is submitted to the blockchain but failed with the following error:\n
+                    ${section}.${name}: ${docs.join(' ')}`);   
+            }   
+    
+            // console.log(JSON.stringify(result.toHuman(), null, 2));
+            console.log("Submitted tx in block:", result.status.toHuman());
+            api.disconnect()
+            
         }
-    });
+        
+    })
 }
+
+
