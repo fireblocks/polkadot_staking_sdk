@@ -70,19 +70,17 @@ export async function sendTransaction(
     fireblocks: FireblocksSDK, 
     account: string, 
     blocks: number | undefined, 
-    endpoint: string, 
-    [txName, ...params]: any[], 
+    endpoint: string,  
+    params: any[],
     vaultAccountId: string, 
     txNote: string, 
     testnet: boolean,
-    proxyNominate?: boolean,
-    proxyType?: string,
-    nominator?: string,
-    validators?: any[]
+    proxy?: boolean,
     ): Promise<void> {
     
+    let result;
     const api = await ApiPromise.create({ provider: new WsProvider(endpoint) });
-
+    const [txName, ...restParams] = params 
     const [section, method] = txName.split('.');
     assert(api.tx[section] && api.tx[section][method], `Unable to find method ${section}.${method}`);
 
@@ -103,18 +101,28 @@ export async function sendTransaction(
             period: blocks
         });
     }
+    
 
-    let result;
+    // if calling from proxy
+    if (proxy) {
 
-    // if nominating from proxy
-    if (proxyNominate) {
-
-        // call nominate as proxy
-        result = api.tx.proxy.proxy(
-            nominator,
-            proxyType,
-            api.tx.staking.nominate(validators)
-        )
+        let noParamsCall = true
+        const [ proxyCall, proxyReal, proxyType, ...proxyCallParams ] = restParams
+        const [ proxySection, proxyMethod ] = proxyCall.split('.');
+        
+        if(proxyCallParams.length >= 1)
+            noParamsCall = false
+            
+        // call method as proxy
+        try {
+            result = api.tx.proxy.proxy(
+                proxyReal,
+                proxyType,
+                noParamsCall? api.tx[proxySection][proxyMethod]() : api.tx[proxySection][proxyMethod](...proxyCallParams)
+            )
+        } catch(e) {
+            console.log(e)
+        }
     
     } else {
 
@@ -129,11 +137,9 @@ export async function sendTransaction(
                 const { docs, name, section } = decoded;
             
                 console.log(
-                    `The transaction is submitted to the blockchain but failed with the following error:\n
-                    ${section}.${name}: ${docs.join(' ')}`);   
+                    `The transaction is submitted to the blockchain but failed with the following error:\n${section}.${name}: ${docs.join(' ')}`);   
             }   
     
-            // console.log(JSON.stringify(result.toHuman(), null, 2));
             console.log("Submitted tx in block:", result.status.toHuman());
             api.disconnect()
             

@@ -36,18 +36,12 @@ export class DOTStaker {
             vaultAccountId, 
             params, 
             txNote,
-            proxyNominate,
-            nominator,
-            proxyType,
-            validators
+            proxy
         }: {
             vaultAccountId: string, 
             params: any[], 
-            proxyType?: string,
             txNote?: string, 
-            proxyNominate?: boolean,
-            nominator?: string,
-            validators?: any[]
+            proxy?: boolean,
         }) {
         
         const permanentAddress = await this.getPermanentAddress(vaultAccountId);
@@ -60,10 +54,7 @@ export class DOTStaker {
             vaultAccountId, 
             txNote, 
             this.testnet,
-            proxyNominate? true: false,
-            proxyType,
-            nominator,
-            validators
+            proxy? true: false,
         );
     }
 
@@ -225,24 +216,27 @@ export class DOTStaker {
 
 
     /**
-     * Nominate validators on a behalf proxied controller
-     * @param vaultAccountId - proxy account vault ID
-     * @param nominator - controller account address
-     * @param validators - array of validators to nominate
-     * @param proxyType - (optional) proxy type, default is 'Staking'
+     * Execute a staking operation if you are an allowed proxy, Possible methods to execute can be found in here:
+     * https://polkadot.js.org/docs/substrate/extrinsics#staking
+     * 
+     * @param vaultAccountId - proxy vault account ID
+     * @param method - staking method to execute
+     * @param realAddress - the original address that is proxied
+     * @param proxyCallParams - the relevant method params or empty array by default 
      */
-    public async nominateFromProxy(vaultAccountId: string, nominator: string, validators: any[], proxyType = "Staking"){
+    public async callFromProxy(vaultAccountId: string,  method: string, realAddress: string, proxyType: string, proxyCallParams: any[]=[]){
         await this.sendTransaction({
             params:
                 [
                     'proxy.proxy',
+                    `staking.${method.toLowerCase()}`,
+                    realAddress,
+                    proxyType,
+                    proxyCallParams
                 ],
                 vaultAccountId,
-                validators,
-                nominator,
-                proxyType,
-                proxyNominate: true,
-                txNote: `Nominating validators on behalf ${nominator}`,
+                proxy: true,
+                txNote: `Executing ${method} as proxy`,
                 
 
             }
