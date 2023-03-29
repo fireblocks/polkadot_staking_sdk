@@ -106,19 +106,15 @@ export async function sendTransaction(
     // if calling from proxy
     if (proxy) {
 
-        let noParamsCall = true
         const [ proxyCall, proxyReal, proxyType, ...proxyCallParams ] = restParams
-        const [ proxySection, proxyMethod ] = proxyCall.split('.');
-        
-        if(proxyCallParams.length >= 1)
-            noParamsCall = false
+        const [ proxySection, proxyMethod ] = proxyCall.split('.');      
             
         // call method as proxy
         try {
             result = api.tx.proxy.proxy(
                 proxyReal,
                 proxyType,
-                noParamsCall? api.tx[proxySection][proxyMethod]() : api.tx[proxySection][proxyMethod](...proxyCallParams)
+                proxyCallParams[0]? api.tx[proxySection][proxyMethod](...proxyCallParams) : api.tx[proxySection][proxyMethod]()
             )
         } catch(e) {
             console.log(e)

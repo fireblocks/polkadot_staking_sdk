@@ -1,4 +1,5 @@
 import { sendTransaction } from "./Fireblocks-signer";
+import { CallFromProxy } from "./types";
 
 
 export class DOTStaker {
@@ -216,27 +217,51 @@ export class DOTStaker {
 
 
     /**
+     * 
+     * 
+     * /**
      * Execute a staking operation if you are an allowed proxy, Possible methods to execute can be found in here:
      * https://polkadot.js.org/docs/substrate/extrinsics#staking
      * 
      * @param vaultAccountId - proxy vault account ID
      * @param method - staking method to execute
      * @param realAddress - the original address that is proxied
+     * @param proxyType - the originally assigned proxy type (default is 'Staking')
      * @param proxyCallParams - the relevant method params or empty array by default 
      */
-    public async callFromProxy(vaultAccountId: string,  method: string, realAddress: string, proxyType: string, proxyCallParams: any[]=[]){
+    // public async callFromProxy(vaultAccountId: string,  method: string, realAddress: string, proxyType: string='Staking', proxyCallParams: any[]=[]){
+    //     await this.sendTransaction({
+    //         params:
+    //             [
+    //                 'proxy.proxy',
+    //                 `staking.${method.toLowerCase()}`,
+    //                 realAddress,
+    //                 proxyType,
+    //                 proxyCallParams
+    //             ],
+    //             vaultAccountId,
+    //             proxy: true,
+    //             txNote: `Executing ${method} as proxy`,
+                
+
+    //         }
+    //     )
+    // }
+
+    public async callFromProxy(args: CallFromProxy){
+    
         await this.sendTransaction({
             params:
                 [
                     'proxy.proxy',
-                    `staking.${method.toLowerCase()}`,
-                    realAddress,
-                    proxyType,
-                    proxyCallParams
+                    `staking.${args.method.toLowerCase()}`,
+                    args.realAddress,
+                    args.proxyType? args.proxyType : 'Staking',
+                    args.proxyCallParams? args.proxyCallParams: false
                 ],
-                vaultAccountId,
+                vaultAccountId: args.vaultAccountId,
                 proxy: true,
-                txNote: `Executing ${method} as proxy`,
+                txNote: `Executing ${args.method} as proxy`
                 
 
             }
