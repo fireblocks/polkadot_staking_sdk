@@ -217,36 +217,15 @@ export class DOTStaker {
 
 
     /**
-     * 
-     * 
-     * /**
      * Execute a staking operation if you are an allowed proxy, Possible methods to execute can be found in here:
      * https://polkadot.js.org/docs/substrate/extrinsics#staking
-     * 
-     * @param vaultAccountId - proxy vault account ID
-     * @param method - staking method to execute
-     * @param realAddress - the original address that is proxied
-     * @param proxyType - the originally assigned proxy type (default is 'Staking')
-     * @param proxyCallParams - the relevant method params or empty array by default 
+     * @param args: CallFromProxy: 
+     *      @param vaultAccountId - proxy vault account ID
+     *      @param method - staking method to execute
+     *      @param realAddress - the original address that is proxied
+     *      @param proxyType - the originally assigned proxy type (default is 'Staking')
+     *      @param proxyCallParams - the relevant method params or empty array by default 
      */
-    // public async callFromProxy(vaultAccountId: string,  method: string, realAddress: string, proxyType: string='Staking', proxyCallParams: any[]=[]){
-    //     await this.sendTransaction({
-    //         params:
-    //             [
-    //                 'proxy.proxy',
-    //                 `staking.${method.toLowerCase()}`,
-    //                 realAddress,
-    //                 proxyType,
-    //                 proxyCallParams
-    //             ],
-    //             vaultAccountId,
-    //             proxy: true,
-    //             txNote: `Executing ${method} as proxy`,
-                
-
-    //         }
-    //     )
-    // }
 
     public async callFromProxy(args: CallFromProxy){
     
@@ -262,8 +241,6 @@ export class DOTStaker {
                 vaultAccountId: args.vaultAccountId,
                 proxy: true,
                 txNote: `Executing ${args.method} as proxy`
-                
-
             }
         )
     }
