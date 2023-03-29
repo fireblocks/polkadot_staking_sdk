@@ -1,4 +1,4 @@
-# Fireblocks Polkadot staking - this branch is NON PRODUCTION branch. Please use the main branch only!!!
+# Fireblocks Polkadot staking - this branch is NON PRODUCTION branch and for internal usage only. Please use the main branch only!!!
 
 This script allows to stake DOT via the Fireblocks system using the RAW signing API feature.
 
@@ -66,3 +66,63 @@ reward_destination - Can be one of the following:
 **How to change controller**
 
 1. setController(<stash_vault_account_id>, <controller_address>)
+
+**How to call methods from a proxy account**
+
+*** With the following structure of accounts: ***
+
+1. Stash account:
+    vaultAccountId = 0
+    address = 131AxR1JdcYdtnzT5nqzVRwDJC5GWqP4S8bKpixdMGcwRhhQ
+2. Controller account:
+    vaultAccountId = 1
+    address = 16Co1rwKf7XdRF8JBBX5uAxP23XZKdXYp5w9pax3zY7t2Kk4
+3. Proxy account:
+    vaultAccountId = 2
+    address = 14ZGCffp5gMerBPHpC75aM4y5THxfUnDrtFGebGLrQUD2sME
+
+Following the examples in 'How To Stake DOT', we executed:
+
+1. addProxy('1', '14ZGCffp5gMerBPHpC75aM4y5THxfUnDrtFGebGLrQUD2sME')
+2. bond('0', 100, '16Co1rwKf7XdRF8JBBX5uAxP23XZKdXYp5w9pax3zY7t2Kk4')
+
+The 2 operations above set our stash + controller to be ready for staking and the only missing operation is to nominate validators.
+
+Nominate method receives 1 input parameter:
+    1. nominate(targets: Vec<MultiAddress>) - targets is an array of validator addresses
+
+In a case of nominating directly from the controller account (without proxy) the execution should be done using the 'nominate' Fireblocks DOT staking SDK function:
+
+```
+    const res = await dotStaker.nominate('1', ['<validator_#1>', '<validator_#2'>...'<validator_#16>])
+```
+
+In case of nominating from a proxy account, the exectution should be done using the 'callFromProxy' Fireblocks DOT staking SDK function:
+
+```
+    const res = await dotStaker.callFromProxy({
+        
+        vaultAccountId: "2",
+        method: "nominate",
+        realAddress: "16Co1rwKf7XdRF8JBBX5uAxP23XZKdXYp5w9pax3zY7t2Kk4",
+        proxyCallParams: [
+            "<validator_#1>",
+            "<validator_#2>",
+            .
+            .
+            .
+            "<validator_#16>"
+        ]
+    })
+```
+
+Let's go over the inputs in 'callFromProxy':
+
+    'callFromProxy' receives an object with the following properties:
+
+        vaultAccountId - the vault account ID of your proxy account
+        method - which method you would like to execute as a proxy (in this example - 'nominate')
+        realAddress - address of the controller account that assigned you as a proxy
+        proxyCallParams - (optional) array of the parameters that should be passed to the staking method you are executing (in this case an array of validators)
+
+    You can pass an additional optional parameter 'proxyType' - if you defined the proxy type (when adding the proxy from your controller) to a non Staking type. By default set to 'Staking'.
