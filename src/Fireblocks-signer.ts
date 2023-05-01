@@ -15,13 +15,10 @@ class FireblocksSigner implements Signer {
         private testnet: boolean = false){}
 
     public async signRaw({ data, type }: SignerPayloadRaw): Promise<SignerResult> {
+        
         return new Promise(async (resolve) => {
             let prevStatus;
             data = (data.length > (256 + 1) * 2) ? blake2AsHex(data) : data;
-
-            console.log('Payload: ' + data);
-            console.log('Type: ' + type);
-            console.log('hexToU8a(data): ' + hexToU8a(data));
 
             const rawMessageData: RawMessageData = {
                 messages: [{
@@ -60,18 +57,30 @@ class FireblocksSigner implements Signer {
             const signedTx = (await this.fireblocks.getTransactionById(txId.id)).signedMessages;
             if (signedTx != undefined) {
                 const signature = '0x00' + signedTx[0].signature.fullSig;
-                console.log('Signature: ' + signature);
-
+                
+                // @ts-ignore
                 resolve({ id: 1, signature });
             }
         });
     }
 }
 
-export async function sendTransaction(fireblocks: FireblocksSDK, account: string, blocks: number | undefined, endpoint: string, [txName, ...params]: string[], vaultAccountId, txNote, testnet): Promise<void> {
+export async function sendTransaction(
+        
+    fireblocks: FireblocksSDK, 
+    account: string, 
+    blocks: number | undefined, 
+    endpoint: string,  
+    params: any[],
+    vaultAccountId: string, 
+    txNote: string, 
+    testnet: boolean,
+    proxy?: boolean,
+    ): Promise<void> {
     
+    let result;
     const api = await ApiPromise.create({ provider: new WsProvider(endpoint) });
-
+    const [txName, ...restParams] = params 
     const [section, method] = txName.split('.');
     assert(api.tx[section] && api.tx[section][method], `Unable to find method ${section}.${method}`);
 
@@ -92,19 +101,47 @@ export async function sendTransaction(fireblocks: FireblocksSDK, account: string
             period: blocks
         });
     }
+    
 
-    await api.tx[section][method](...params).signAndSend(account, options, (result): void => {
+    // if calling from proxy
+    if (proxy) {
 
+        const [ proxyCall, proxyReal, proxyType, ...proxyCallParams ] = restParams
+        const [ proxySection, proxyMethod ] = proxyCall.split('.');      
+            
+        // call method as proxy
+        try {
+            result = api.tx.proxy.proxy(
+                proxyReal,
+                proxyType,
+                proxyCallParams[0]? api.tx[proxySection][proxyMethod](...proxyCallParams) : api.tx[proxySection][proxyMethod]()
+            )
+        } catch(e) {
+            console.log(e)
+        }
+    
+    } else {
+
+        result = await api.tx[section][method](...params)
+    };
+
+    result.signAndSend(account, options, (result) => {
         if (result.isInBlock || result.isFinalized) {
 
             if (result.dispatchError?.isModule) {
                 const decoded = api.registry.findMetaError(result.dispatchError.asModule);
                 const { docs, name, section } = decoded;
-
-                console.log(`${section}.${name}: ${docs.join(' ')}`);   
-            }
-
-            console.log(JSON.stringify(result.toHuman(), null, 2));
+            
+                console.log(
+                    `The transaction is submitted to the blockchain but failed with the following error:\n${section}.${name}: ${docs.join(' ')}`);   
+            }   
+    
+            console.log("Submitted tx in block:", result.status.toHuman());
+            api.disconnect()
+            
         }
-    });
+        
+    })
 }
+
+
