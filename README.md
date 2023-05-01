@@ -1,4 +1,4 @@
-# Fireblocks Polkadot staking - this branch is NON PRODUCTION branch and for internal usage only. Please use the main branch only!!!
+# Fireblocks Polkadot staking
 
 This script allows to stake DOT via the Fireblocks system using the RAW signing API feature.
 
