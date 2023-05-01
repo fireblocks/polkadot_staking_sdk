@@ -69,7 +69,7 @@ reward_destination - Can be one of the following:
 
 **How to call methods from a proxy account**
 
-*** With the following structure of accounts: ***
+***With the following structure of accounts:***
 
 1. Stash account:
 ```
