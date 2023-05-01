@@ -86,7 +86,7 @@ reward_destination - Can be one of the following:
     vaultAccountId = 2
     address = 14ZGCffp5gMerBPHpC75aM4y5THxfUnDrtFGebGLrQUD2sME
 ```
-*** Following the examples in 'How To Stake DOT', we executed: ***
+***Following the examples in 'How To Stake DOT', we executed:***
 ```
 1. addProxy('1', '14ZGCffp5gMerBPHpC75aM4y5THxfUnDrtFGebGLrQUD2sME')
 2. bond('0', 100, '16Co1rwKf7XdRF8JBBX5uAxP23XZKdXYp5w9pax3zY7t2Kk4')
