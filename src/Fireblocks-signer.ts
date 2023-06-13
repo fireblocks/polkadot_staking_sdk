@@ -121,8 +121,8 @@ export async function sendTransaction(
         }
     
     } else {
-
-        result = await api.tx[section][method](...params)
+        const [_, ...rest] = params;
+        result = await api.tx[section][method](...rest)
     };
 
     result.signAndSend(account, options, (result) => {
