@@ -120,11 +120,12 @@ export class DOTStaker {
             this.availableBalance = Number.parseFloat(
                 await this.getAvailableBalance(vaultAccountId) as unknown as string);
         }
-        
+        const amountToBond = amount ? amount : this.availableBalance;
+
         await this.sendTransaction({ 
             params: [
                 'staking.bondExtra', 
-                (this.testnet? this.availableBalance * 1000000000000 : this.availableBalance * 10000000000).toString()
+                (this.testnet? amountToBond * 1000000000000 : amountToBond * 10000000000).toString()
             ], 
             vaultAccountId, 
             txNote: `Bond extra ${this.availableBalance} DOT`});
