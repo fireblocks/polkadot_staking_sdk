@@ -75,13 +75,15 @@ export class DOTStaker {
                 await this.getAvailableBalance(vaultAccountId) as unknown as string)
         } 
 
-        const txNote = controllerAddress ? `Bond ${amount} DOT to ${controllerAddress}` : `Bond ${amount} DOT`;
+        const amountToBond = amount ? amount : this.availableBalance;
+        
+        const txNote = controllerAddress ? `Bond ${amountToBond} DOT to ${controllerAddress}` : `Bond ${amountToBond} DOT`;
 
         await this.sendTransaction({
             vaultAccountId,
             params: [
                 'staking.bond', controllerAddress || await this.getPermanentAddress(vaultAccountId),
-                (this.testnet? this.availableBalance * 1000000000000 : this.availableBalance * 10000000000).toString(),
+                (this.testnet? amountToBond * 1000000000000 : amountToBond * 10000000000).toString(),
                 rewardDestination? rewardDestination: 'Stash'
             ],
             txNote
@@ -128,7 +130,7 @@ export class DOTStaker {
                 (this.testnet? amountToBond * 1000000000000 : amountToBond * 10000000000).toString()
             ], 
             vaultAccountId, 
-            txNote: `Bond extra ${this.availableBalance} DOT`});
+            txNote: `Bond extra ${amountToBond} DOT`});
     }
     
 
