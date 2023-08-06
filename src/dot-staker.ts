@@ -195,7 +195,7 @@ export class DOTStaker {
      * @param controllerAddress - new controller address
      */
     public async setController(vaultAccountId: string, controllerAddress: string){
-        throw new Error("setController is no longer supported in DOT / KSM / WND, for more information: https://forum.polkadot.network/t/staking-controller-deprecation-plan-staking-ui-leads-comms/2748")
+        throw new Error("setController is no longer supported in DOT / KSM / WND, for more information see README.md")
     }
 
 

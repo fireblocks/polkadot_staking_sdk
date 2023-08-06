@@ -2,6 +2,12 @@
 
 This script allows to stake DOT via the Fireblocks system using the RAW signing API feature.
 
+## :warning: Breaking Change in 2.0.0 :warning:
+Version 2.0.0 introduces a breaking change; as per [this forum post](https://forum.polkadot.network/t/staking-controller-deprecation-plan-staking-ui-leads-comms/2748) on Polkadot - the controller is being deprecated.<br>
+As a result the following breaking changes were introduced:
+* The function `setController` will no longer work and will results in an error
+* The function `bond` no longer accepts 4 arguments, instead only 3 arguments - `vaultAccountId: string, amount?: number, rewardDestination?: string` (the `controller` argument was removed)
+
 ## Getting started
 
 1. Clone this repo locally
