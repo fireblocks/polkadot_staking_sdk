@@ -64,10 +64,9 @@ export class DOTStaker {
      * Bond an amount of DOT from the stash to the controller
      * @param vaultAccountId - Stash vault account ID
      * @param amount - the amount to bond (Default is the entire available balance)
-     * @param controllerAddress - the controller's address
      * @param rewardDestination - rewards destination (Stash, Staked or Controller)
      */
-    public async bond(vaultAccountId: string, amount?: number, controllerAddress?: string, rewardDestination?: string) {
+    public async bond(vaultAccountId: string, amount?: number, rewardDestination?: string) {
         
         if(!amount) {
             await this.refreshBalance(vaultAccountId)
@@ -77,12 +76,12 @@ export class DOTStaker {
 
         const amountToBond = amount ? amount : this.availableBalance;
         
-        const txNote = controllerAddress ? `Bond ${amountToBond} DOT to ${controllerAddress}` : `Bond ${amountToBond} DOT`;
+        const txNote = `Bond ${amountToBond} DOT`;
 
         await this.sendTransaction({
             vaultAccountId,
             params: [
-                'staking.bond', controllerAddress || await this.getPermanentAddress(vaultAccountId),
+                'staking.bond',
                 (this.testnet? amountToBond * 1000000000000 : amountToBond * 10000000000).toString(),
                 rewardDestination? rewardDestination: 'Stash'
             ],
@@ -196,7 +195,7 @@ export class DOTStaker {
      * @param controllerAddress - new controller address
      */
     public async setController(vaultAccountId: string, controllerAddress: string){
-        await this.sendTransaction({params: ['staking.setController', controllerAddress], vaultAccountId, txNote: `Setting ${controllerAddress} as contoller`})
+        throw new Error("setController is no longer supported in DOT / KSM / WND, for more information: https://forum.polkadot.network/t/staking-controller-deprecation-plan-staking-ui-leads-comms/2748")
     }
 
 
