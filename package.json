@@ -1,15 +1,16 @@
 {
   "name": "dot_staking",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "FB DOT Staking",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "echo \"!!!Breaking Change Introduced!!!\nPlease see README.md\""
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@polkadot/api": "^10.2.1",
+    "@polkadot/api": "^10.9.1",
     "fireblocks-sdk": ">=1.7.1",
     "fs": "0.0.1-security",
     "path": "^0.12.7",
