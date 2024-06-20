@@ -70,10 +70,10 @@ export class DOTStaker {
   }
 
   /**
-   * Bond an amount of DOT from the stash to the controller
+   * Bond an amount of DOT from the stash
    * @param vaultAccountId - Stash vault account ID
    * @param amount - the amount to bond (Default is the entire available balance)
-   * @param rewardDestination - rewards destination (Stash, Staked or Controller)
+   * @param rewardDestination - rewards destination (Stash or Staked)
    */
   public async bond(
     vaultAccountId: string,
@@ -107,7 +107,7 @@ export class DOTStaker {
 
   /**
    * Rebond unbonding amount
-   * @param vaultAccountId - controller vault account
+   * @param vaultAccountId - staking vault account
    * @param amount - amount to rebond
    */
   public async rebond(vaultAccountId: string, amount: number) {
@@ -125,7 +125,7 @@ export class DOTStaker {
   }
 
   /**
-   * Bond an extra amount from the stash to the controller (after running bond())
+   * Bond an extra amount from the stash (after running bond())
    * @param vaultAccountId - stash vault account id
    * @param amount - (optional) amount to bond extra. The entire available balance by default.
    */
@@ -152,8 +152,8 @@ export class DOTStaker {
   }
 
   /**
-   * Unbond bonded DOT - can be executed after chill(). Signed by the controller.
-   * @param vaultAccountId - controller vault account id
+   * Unbond bonded DOT - can be executed after chill().
+   * @param vaultAccountId - vault account id
    * @param amount - amount to unbond
    */
   public async unbond(vaultAccountId: string, amount: number) {
@@ -171,8 +171,8 @@ export class DOTStaker {
   }
 
   /**
-   * Add proxy to your controller so it will have the permissions to nominate validators
-   * @param vaultAccountId - controller vault account id
+   * Add proxy account to your stash account so it will have the permissions to nominate validators
+   * @param vaultAccountId - stash vault account id
    * @param proxyAddress - DOT proxy address
    */
   public async addProxy(vaultAccountId: string, proxyAddress: string) {
@@ -184,20 +184,20 @@ export class DOTStaker {
   }
 
   /**
-   * Chill the controller account before unbonding
-   * @param vaultAccountId - controller vault account id
+   * Chill the staking account before unbonding
+   * @param vaultAccountId - stash/proxy vault account id
    */
   public async chill(vaultAccountId: string) {
     await this.sendTransaction({
       params: ["staking.chill"],
       vaultAccountId,
-      txNote: `Chilling the controller account`,
+      txNote: `Chilling the stash account`,
     });
   }
 
   /**
    * Remove the previously added proxy address
-   * @param vaultAccountId - controller vault account id
+   * @param vaultAccountId - stash vault account id
    * @param proxyAddress - added proxy address
    * @param proxyType - proxy type (default: 'NonTransfer')
    */
@@ -220,7 +220,7 @@ export class DOTStaker {
 
   /**
    * 28 days after unbond - releases the unbonded funds
-   * @param vaultAccountId - controller vault account id
+   * @param vaultAccountId - staking vault account id
    */
   public async withdrawUnbonded(vaultAccountId: string) {
     await this.sendTransaction({
@@ -231,7 +231,7 @@ export class DOTStaker {
   }
 
   /**
-   * Change the controller account
+   * Deprecated!
    * @param vaultAccountId - stash vault account id
    * @param controllerAddress - new controller address
    */
@@ -246,7 +246,7 @@ export class DOTStaker {
 
   /**
    * Nominate validators for the bonded amount
-   * @param vaultAccountId - controller vault account
+   * @param vaultAccountId - stash/proxy vault account
    * @param validators - array of validators (up to 16)
    */
   public async nominate(vaultAccountId: string, validators: any[]) {
