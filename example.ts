@@ -1,16 +1,25 @@
 import fs from "fs";
-import path from "path";
-import {FireblocksSDK, PeerType, TransactionArguments, TransactionOperation, TransactionStatus} from "fireblocks-sdk";
+import { FireblocksSDK } from "fireblocks-sdk";
 import { DOTStaker } from "./src/dot-staker";
 
-const apiSecret = fs.readFileSync(path.resolve(__dirname, "./fireblocks_secret.key"), "utf8");
+const apiSecret = fs.readFileSync("./fireblocks_secret.key", "utf8");
 const apiKey = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX";
 const fireblocks = new FireblocksSDK(apiSecret, apiKey);
 const dotStaker = new DOTStaker(fireblocks, false);
 
-(async() => {
-    
-    const res = await dotStaker.addProxy("2", <proxy_dot_address>);
-    console.log(JSON.stringify(res, null, 2));
+async function stakeDot() {
+  try {
+    const addProxyTx = await dotStaker.addProxy(
+      "<STASH_VAULT_ACCOUNT_ID",
+      "<PROXY_ADDRESS>"
+    );
+    console.log(JSON.stringify(addProxyTx, null, 2));
 
-})().catch(console.log);
+    const bondTx = await dotStaker.bond("<STASH_VAULT_ACCOUNT_ID>");
+    console.log(JSON.stringify(bondTx, null, 2));
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+stakeDot();

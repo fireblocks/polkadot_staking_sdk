@@ -1,9 +1,10 @@
+import { FireblocksSDK } from "fireblocks-sdk";
 import { sendTransaction } from "./Fireblocks-signer";
 import { CallFromProxy } from "./types";
 
 export class DOTStaker {
   constructor(
-    private apiClient,
+    private apiClient: FireblocksSDK,
     private testnet = false,
     private availableBalance: any = 0
   ) {}
@@ -18,7 +19,7 @@ export class DOTStaker {
       : "wss://rpc.polkadot.io/";
   }
 
-  private async getPermanentAddress(vaultAccountId) {
+  private async getPermanentAddress(vaultAccountId: string) {
     var depositAddress = await this.apiClient.getDepositAddresses(
       vaultAccountId,
       this.getAssetId()
@@ -177,7 +178,7 @@ export class DOTStaker {
    */
   public async addProxy(vaultAccountId: string, proxyAddress: string) {
     await this.sendTransaction({
-      params: ["proxy.addProxy", proxyAddress, "Staking", "0"],
+      params: ["proxy.addProxy", proxyAddress, "NonTransfer", "0"], //changed to "NonTransfer" for controller deprecation
       vaultAccountId,
       txNote: `Adding the following proxy: ${proxyAddress}`,
     });
@@ -185,13 +186,13 @@ export class DOTStaker {
 
   /**
    * Chill the staking account before unbonding
-   * @param vaultAccountId - stash/proxy vault account id
+   * @param vaultAccountId - stash vault account id
    */
   public async chill(vaultAccountId: string) {
     await this.sendTransaction({
       params: ["staking.chill"],
       vaultAccountId,
-      txNote: `Chilling the stash account`,
+      txNote: `Chilling the account`,
     });
   }
 
