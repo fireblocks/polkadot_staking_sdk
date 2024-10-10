@@ -1,6 +1,6 @@
 import { FireblocksSDK } from "fireblocks-sdk";
 import { sendTransaction } from "./Fireblocks-signer";
-import { CallFromProxy } from "./types";
+import { CallFromProxy, ProxyTypesEnum } from "./types";
 
 export class DOTStaker {
   constructor(
@@ -175,10 +175,15 @@ export class DOTStaker {
    * Add proxy account to your stash account so it will have the permissions to nominate validators
    * @param vaultAccountId - stash vault account id
    * @param proxyAddress - DOT proxy address
+   * @param proxyType - proxy type, defaults to "Staking"
    */
-  public async addProxy(vaultAccountId: string, proxyAddress: string) {
+  public async addProxy(
+    vaultAccountId: string,
+    proxyAddress: string,
+    proxyType: ProxyTypesEnum = ProxyTypesEnum.Staking
+  ) {
     await this.sendTransaction({
-      params: ["proxy.addProxy", proxyAddress, "NonTransfer", "0"], //changed to "NonTransfer" for controller deprecation
+      params: ["proxy.addProxy", proxyAddress, proxyType, "0"],
       vaultAccountId,
       txNote: `Adding the following proxy: ${proxyAddress}`,
     });
@@ -200,20 +205,15 @@ export class DOTStaker {
    * Remove the previously added proxy address
    * @param vaultAccountId - stash vault account id
    * @param proxyAddress - added proxy address
-   * @param proxyType - proxy type (default: 'NonTransfer')
+   * @param proxyType - proxy type (default: 'Staking')
    */
   public async removeProxy(
     vaultAccountId: string,
     proxyAddress: string,
-    proxyType?: string
+    proxyType: ProxyTypesEnum = ProxyTypesEnum.Staking
   ) {
     await this.sendTransaction({
-      params: [
-        "proxy.removeProxy",
-        proxyAddress,
-        proxyType ? proxyType : "NonTransfer",
-        "0",
-      ],
+      params: ["proxy.removeProxy", proxyAddress, proxyType, "0"],
       vaultAccountId,
       txNote: `Removing the following proxy: ${proxyAddress}`,
     });
