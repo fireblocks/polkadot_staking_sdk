@@ -175,7 +175,7 @@ export class DOTStaker {
    * Add proxy account to your stash account so it will have the permissions to nominate validators
    * @param vaultAccountId - stash vault account id
    * @param proxyAddress - DOT proxy address
-   * @param type - proxy type, defaults to "Staking"
+   * @param proxyType - proxy type, defaults to "Staking"
    */
   public async addProxy(
     vaultAccountId: string,
