@@ -175,10 +175,15 @@ export class DOTStaker {
    * Add proxy account to your stash account so it will have the permissions to nominate validators
    * @param vaultAccountId - stash vault account id
    * @param proxyAddress - DOT proxy address
+   * @param type - proxy type, defaults to "NonTransfer"
    */
-  public async addProxy(vaultAccountId: string, proxyAddress: string) {
+  public async addProxy(
+    vaultAccountId: string,
+    proxyAddress: string,
+    type: string = "NonTransfer"
+  ) {
     await this.sendTransaction({
-      params: ["proxy.addProxy", proxyAddress, "NonTransfer", "0"], //changed to "NonTransfer" for controller deprecation
+      params: ["proxy.addProxy", proxyAddress, type, "0"],
       vaultAccountId,
       txNote: `Adding the following proxy: ${proxyAddress}`,
     });
