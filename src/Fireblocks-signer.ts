@@ -14,7 +14,7 @@ import { ApiPromise, WsProvider } from "@polkadot/api";
 import { assert, hexToU8a, u8aToHex } from "@polkadot/util";
 import { blake2AsHex } from "@polkadot/util-crypto";
 
-class FireblocksSigner implements Signer {
+export class FireblocksSigner implements Signer {
   constructor(
     public fireblocks: FireblocksSDK,
     private vaultAccountId: string,
@@ -97,7 +97,10 @@ export async function sendTransaction(
   proxy?: boolean
 ): Promise<void> {
   let result;
-  const api = await ApiPromise.create({ provider: new WsProvider(endpoint) });
+  const api = await ApiPromise.create({
+    provider: new WsProvider(endpoint),
+    noInitWarn: true // Suppress API initialization warnings
+  });
   const [txName, ...restParams] = params;
   const [section, method] = txName.split(".");
   assert(
