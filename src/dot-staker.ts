@@ -15,8 +15,8 @@ export class DOTStaker {
 
   private getEndpoint() {
     return this.testnet
-      ? "wss://westend-rpc.polkadot.io/"
-      : "wss://rpc.polkadot.io/";
+      ? "wss://westend-asset-hub-rpc.polkadot.io/"
+      : "wss://polkadot-asset-hub-rpc.polkadot.io/";
   }
 
   private async getPermanentAddress(vaultAccountId: string) {

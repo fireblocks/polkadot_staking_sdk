@@ -2,7 +2,19 @@
 
 This script allows to stake DOT via the Fireblocks system using the RAW signing API feature.
 
-## :warning: Breaking Change in 2.0.0 :warning:
+## :warning: Important Updates :warning:
+
+### Asset Hub Migration (November 2024)
+
+**All staking operations now happen on Polkadot Asset Hub, not the Relay Chain.**
+
+After the November 2024 migration:
+- ✅ Staking operations (bond, unbond, nominate, chill, etc.) execute on **Asset Hub**
+- ✅ DOT balances remain on **Asset Hub**
+- ✅ **No cross-chain transfers needed** for staking
+- ℹ️  The SDK automatically connects to the correct endpoint (Asset Hub)
+
+### Breaking Change in 2.0.0
 
 Version 2.0.0 introduces a breaking change; as per [this forum post](https://forum.polkadot.network/t/staking-controller-deprecation-plan-staking-ui-leads-comms/2748) on Polkadot - the controller is being deprecated.<br>
 As a result the following breaking changes were introduced:
