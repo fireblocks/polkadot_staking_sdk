@@ -4,11 +4,11 @@ This script allows to stake DOT via the Fireblocks system using the RAW signing 
 
 ## :warning: Important Updates :warning:
 
-### Asset Hub Migration (November 2024)
+### Asset Hub Migration (November 2025)
 
 **All staking operations now happen on Polkadot Asset Hub, not the Relay Chain.**
 
-After the November 2024 migration:
+After the November 2025 migration:
 - ✅ Staking operations (bond, unbond, nominate, chill, etc.) execute on **Asset Hub**
 - ✅ DOT balances remain on **Asset Hub**
 - ✅ **No cross-chain transfers needed** for staking
