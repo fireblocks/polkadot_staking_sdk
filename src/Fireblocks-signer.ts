@@ -70,7 +70,7 @@ export class FireblocksSigner implements Signer {
           console.log("Transaction's status: " + txId.status);
         }
 
-        setTimeout(() => {}, 4000);
+        await new Promise((resolve) => setTimeout(resolve, 4000));
       }
 
       const signedTx = (await this.fireblocks.getTransactionById(txId.id))
